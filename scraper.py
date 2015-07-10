@@ -40,10 +40,8 @@ class CPCBScraper(object):
             old_progress_div = self.driver.find_element_by_id('UpdateProgress1')
             state_select.select_by_index(state_index)
 
-            print 'State', state_select.options[state_index].text
-
-            if state_select.options[state_index].text == 'Delhi':
-                print 'break'
+            state = state_select.options[state_index].text
+            print 'State', state
 
             def done_loading(driver):
                 time.sleep(1)
@@ -58,16 +56,17 @@ class CPCBScraper(object):
             wait = WebDriverWait(self.driver, 10)
             wait.until(done_loading)
 
-            print 'now get city'
-
             city_select = Select(self.driver.find_element_by_id('ddlCity'))
             city_option_indexes = range(1, len(city_select.options))            
 
             for city_index in city_option_indexes:
                 old_progress_div = self.driver.find_element_by_id('UpdateProgress1')
+
+                city_select = Select(self.driver.find_element_by_id('ddlCity'))
                 city_select.select_by_index(city_index)
 
-                print 'City', city_select.options[city_index].text
+                city = city_select.options[city_index].text
+                print 'City', city
 
                 # Wait until station loaded
                 wait = WebDriverWait(self.driver, 10)
@@ -78,9 +77,12 @@ class CPCBScraper(object):
 
                 for station_index in station_option_indexes:
                     old_progress_div = self.driver.find_element_by_id('UpdateProgress1')
+
+                    station_select = Select(self.driver.find_element_by_id('ddlStation'))
                     station_select.select_by_index(station_index)
 
-                    print 'Station', station_select.options[station_index].text
+                    station = station_select.options[station_index].text
+                    print 'Station', station
 
                     # Wait until parameters loaded
                     wait = WebDriverWait(self.driver, 10)
@@ -105,7 +107,7 @@ class CPCBScraper(object):
                     s = BeautifulSoup(self.driver.page_source)
                     print s.prettify()
 
-                    self.driver.save_screenshot("./screenshot.png")
+                    self.driver.save_screenshot('-'.join([state, city, station, 'screenshot.png']))
 
         self.driver.quit()
 
