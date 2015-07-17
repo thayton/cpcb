@@ -104,8 +104,14 @@ class CPCBScraper(object):
                     submit = self.driver.find_element_by_id('btnSubmit')
                     submit.click()
 
-                    s = BeautifulSoup(self.driver.page_source)
-                    print s.prettify()
+                    def report_loaded(driver):
+                        form = driver.find_element_by_id('form1')
+                        action = form.get_attribute('action')
+                        return action.endswith('frmReportdisplay.aspx')
+
+                    # Very slow load...
+                    wait = WebDriverWait(self.driver, 300) 
+                    wait.until(report_loaded)
 
                     self.driver.save_screenshot('-'.join([state, city, station, 'screenshot.png']))
 
