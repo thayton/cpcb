@@ -110,10 +110,22 @@ class CPCBScraper(object):
                         return action.endswith('frmReportdisplay.aspx')
 
                     # Very slow load...
-                    wait = WebDriverWait(self.driver, 300) 
+                    wait = WebDriverWait(self.driver, 600) 
                     wait.until(report_loaded)
 
                     self.driver.save_screenshot('-'.join([state, city, station, 'screenshot.png']))
+
+                    # Click Close button to get back to form
+                    close = self.driver.find_element_by_id('btnClose')
+                    close.click()
+
+                    def form_loaded(driver):
+                        form = driver.find_element_by_id('form1')
+                        action = form.get_attribute('action')
+                        return action.endswith('frmUserAvgReportCriteria.aspx')
+                        
+                    wait = WebDriverWait(self.driver, 300) 
+                    wait.until(form_loaded)
 
         self.driver.quit()
 
